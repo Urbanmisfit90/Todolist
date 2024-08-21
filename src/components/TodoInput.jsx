@@ -1,16 +1,38 @@
-import { useState } from "react"
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addTodo } from '../redux/actions';
 
-export default function TodoInput(props) {
-    const { handleAddTodos, todoValue, setTodoValue } = props
-    return (
-        <header>
-            <input value={todoValue} onChange={(e) => {
-                setTodoValue(e.target.value)
-            }} placeholder="Enter todo..." />
-            <button onClick={() => {
-                handleAddTodos(todoValue)
-                setTodoValue('')
-            }}>Add</button>
-        </header>
-    )
-}
+const TodoInput = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+    setError('');
+  };
+
+  const handleAddTodo = () => {
+    if (inputValue.trim() === '') {
+      setError('Todo cannot be empty');
+      return;
+    }
+    dispatch(addTodo(inputValue));
+    setInputValue('');
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={handleChange}
+        placeholder="Add a new todo"
+      />
+      <button onClick={handleAddTodo}>Add Todo</button>
+      {error && <p className="error-message">{error}</p>}
+    </div>
+  );
+};
+
+export default TodoInput;

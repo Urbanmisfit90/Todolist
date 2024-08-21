@@ -1,12 +1,4 @@
-export const SET_THEME = 'SET_THEME';
-export const TOGGLE_MODAL = 'TOGGLE_MODAL';
+import { createAction } from '@reduxjs/toolkit';
 
-export const setTheme = (theme) => ({
-  type: SET_THEME,
-  payload: theme,
-});
-
-export const toggleModal = (isOpen) => ({
-  type: TOGGLE_MODAL,
-  payload: isOpen,
-});
+export const addTodo = createAction('todos/add');
+export const removeTodo = createAction('todos/remove');
