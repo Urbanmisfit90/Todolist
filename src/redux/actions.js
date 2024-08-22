@@ -1,4 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const addTodo = createAction('todos/add');
-export const removeTodo = createAction('todos/remove');
+export const toggleShowCompletedTodos = createAction('todos/toggleShowCompletedTodos');
+export const createNewTodo = createAction('todos/createNewTodo', (label, complete) => ({
+  payload: { id: Date.now(), label, complete },
+}));
+export const toggleTodo = createAction('todos/toggleTodo');
+

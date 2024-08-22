@@ -1,38 +1,75 @@
-import { useState } from 'react';
+import React, { useReducer } from 'react';
 import { useDispatch } from 'react-redux';
-import { addTodo } from '../redux/actions';
+import { createNewTodo } from '../redux/actions';
 
-const TodoInput = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [error, setError] = useState('');
+const CHANGE_LABEL = 'CHANGE_LABEL';
+const CHANGE_IS_COMPLETED = 'CHANGE_IS_COMPLETED';
+
+const initialState = {
+  todoLabel: '',
+  todoIsCompleted: false,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case CHANGE_LABEL:
+      return { ...state, todoLabel: action.payload };
+    case CHANGE_IS_COMPLETED:
+      return { ...state, todoIsCompleted: action.payload };
+    default:
+      return state;
+  }
+};
+
+export default function TodoInput() {
   const dispatch = useDispatch();
+  const [state, dispatchLocal] = useReducer(reducer, initialState);
 
-  const handleChange = (e) => {
-    setInputValue(e.target.value);
-    setError('');
+  const onLabelChange = ({ target: { value } }) => {
+    dispatchLocal({ type: CHANGE_LABEL, payload: value });
   };
 
-  const handleAddTodo = () => {
-    if (inputValue.trim() === '') {
-      setError('Todo cannot be empty');
-      return;
-    }
-    dispatch(addTodo(inputValue));
-    setInputValue('');
+  const onIsCompletedChange = ({ target: { checked } }) => {
+    dispatchLocal({ type: CHANGE_IS_COMPLETED, payload: checked });
+  };
+
+  const resetForm = () => {
+    dispatchLocal({ type: CHANGE_LABEL, payload: '' });
+    dispatchLocal({ type: CHANGE_IS_COMPLETED, payload: false });
+  };
+
+  const onNewTodo = evt => {
+    evt.preventDefault();
+    dispatch(createNewTodo(state.todoLabel, state.todoIsCompleted));
+    resetForm();
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={inputValue}
-        onChange={handleChange}
-        placeholder="Add a new todo"
-      />
-      <button onClick={handleAddTodo}>Add Todo</button>
-      {error && <p className="error-message">{error}</p>}
-    </div>
+    <form id="todoForm" onSubmit={onNewTodo}>
+      <h3>Create New Todo Form</h3>
+      <label>
+        <span>Todo label:</span>
+        <input
+          type="text"
+          name="todoLabel"
+          placeholder="Type label"
+          onChange={onLabelChange}
+          value={state.todoLabel}
+        />
+      </label>
+      <label>
+        <span>Is completed:</span>
+        <input
+          type="checkbox"
+          name="todoIsCompleted"
+          onChange={onIsCompletedChange}
+          checked={state.todoIsCompleted}
+        />
+      </label>
+      <label>
+        <span>Create todo:</span>
+        <input type="submit" value="Do it!" disabled={!state.todoLabel.trim()} />
+      </label>
+    </form>
   );
-};
-
-export default TodoInput;
+}
