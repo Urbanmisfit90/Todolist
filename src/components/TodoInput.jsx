@@ -46,7 +46,8 @@ export default function TodoInput() {
 
   return (
     <form id="todoForm" onSubmit={onNewTodo}>
-      <h3>Create New Todo Form</h3>
+      <h2>Todo List</h2>
+      <h3>Create New Todo Entry</h3>
       <label>
         <span>Todo label:</span>
         <input
